@@ -1,8 +1,13 @@
-﻿using System.Collections;
+﻿ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ComputerScript : MonoBehaviour
+/*
+ *
+ * THIS CLASS IS EMPTY FOR A REASON
+ * IT IS USED JUST FOR COLLISION DETECTION OF RAYCAST OBJECTS
+ */
+public class Item : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()
