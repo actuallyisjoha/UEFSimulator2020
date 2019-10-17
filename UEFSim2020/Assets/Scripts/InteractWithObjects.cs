@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class InteractWithObjects : MonoBehaviour
 {
     public ControllerScript CtrlScript;
     public Camera Camera;
     public LayerMask LayerMask;
-    public RectTransform ItemImageRoot;
+    public Text ItemImage;
     private Item SelectedItem;
 
     void Update()
@@ -15,12 +16,26 @@ public class InteractWithObjects : MonoBehaviour
 
 
         RaycastHit hitInfo;
-        if (Physics.Raycast(ray, out hitInfo, 2f, LayerMask))
+        if (Physics.Raycast(ray, out hitInfo, 3f, LayerMask))
         {
             var hitItem = hitInfo.collider.GetComponent<Item>();
             if (hitItem != null)
             {
                 SelectedItem = hitItem;
+                switch (hitInfo.transform.tag)
+                {
+                    case "Computer":
+                        ItemImage.text = "Opiskele";
+                        break;
+
+                    case "Food":
+                        ItemImage.text = "Syö Kemerissä";
+                        break;
+
+                    case "Game":
+                        ItemImage.text = "Pelaa peliä";
+                        break;
+                }
             }
         }
         else
@@ -30,7 +45,7 @@ public class InteractWithObjects : MonoBehaviour
 
         if (SelectedItem != null)
         {
-            ItemImageRoot.gameObject.SetActive(true);
+            ItemImage.gameObject.SetActive(true);
             if (Input.GetKeyDown(KeyCode.E))
             {
                 switch (hitInfo.transform.tag)
@@ -42,13 +57,17 @@ public class InteractWithObjects : MonoBehaviour
                     case "Food":
                         CtrlScript.Eat();
                         break;
+
+                    case "Game":
+                        CtrlScript.Game();
+                        break;
                 }
 
             }
         }
         else
         {
-            ItemImageRoot.gameObject.SetActive(false);
+            ItemImage.gameObject.SetActive(false);
         }
     }
 

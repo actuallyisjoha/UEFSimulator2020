@@ -55,12 +55,14 @@ public class ControllerScript : MonoBehaviour
         else RakkausElamaText.text = "Rakkauselämä: ei";
     }
 
+    #region PlayerActions
     public void Study()
     {
-        IncreaseDice();
         DecreaseMotivation();
         DecreaseFreeTime();
         DecreaseCaffeine();
+
+        IncreaseDice();
         IncreaseHunger();
         IncreasePsychosis();
     }
@@ -71,54 +73,69 @@ public class ControllerScript : MonoBehaviour
         DecreaseHunger();
     }
 
-    public void DecreaseMotivation()
+    public void Game()
+    {
+        IncreaseMotivation();
+        IncreaseHunger();
+    }
+    #endregion
+
+    #region Modify stats
+    private void DecreaseMotivation()
     {
         Motivaatio -= 1 * MotivationPenalty ;
         if (Motivaatio <= 0) GameOver();
     }
 
-    public void DecreaseFreeTime()
+    private void DecreaseFreeTime()
     {
         VapaaAika--;
         // Modify MotivationPenalty in here
         //if (VapaaAika <= 0) GameOver();
     }
 
-    public void DecreaseCaffeine()
+    private void DecreaseCaffeine()
     {
         Kofeiini--;
     }
 
-    public void DecreaseMoney(int value)
+    private void DecreaseMoney(int value)
     {
         Rahat -= value;
     }
 
-    public void IncreaseHunger()
+    private void IncreaseHunger()
     {
         Nalka++;
         if (Nalka >= 100) GameOver();
     }
 
-    public void DecreaseHunger()
+    private void DecreaseHunger()
     {
         Nalka -= 15;
         if (Nalka < 0) Nalka = 0;
     }
 
-    public void IncreasePsychosis()
+    private void IncreasePsychosis()
     {
         Psykoosi++;
         if (Psykoosi >= 100) GameOver();
     }
 
-    public void IncreaseDice()
+    private void IncreaseDice()
     {
         Nopat++;
         if (Nopat >= 300) Debug.Log("Kutittaa. Voitit pelin.");
     }
 
-    public void GameOver()
+    private void IncreaseMotivation()
+    {
+        Motivaatio++;
+        if (Motivaatio > 100) Motivaatio = 100;
+    }
+
+    #endregion
+    private void GameOver()
     {
 
     }
