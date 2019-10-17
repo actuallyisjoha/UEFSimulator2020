@@ -1,2 +1,3 @@
-# UEFSimulator2020
+# UEF Simulator 2020
  
+ You are a student. Go study.
