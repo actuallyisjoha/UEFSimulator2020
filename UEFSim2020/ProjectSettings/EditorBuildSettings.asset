@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/SampleScenes/Scenes/MainMenuScene.unity
+    guid: e4025db8c4807fa4ba885aff50bd9e1c
+  - enabled: 1
     path: Assets/SampleScenes/Scenes/LaitosScene.unity
     guid: f2f18f678332b48458bb0e9c5ab081bf
   m_configObjects: {}

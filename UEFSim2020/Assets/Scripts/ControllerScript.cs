@@ -11,9 +11,11 @@ namespace UEFSimulator
         public int TukiKuukaudet, Nopat, Rahat, VapaaAika, Nalka, Kofeiini, Motivaatio, Psykoosi, MotivationPenalty, MonthlyAllowance;
         public bool RakkausElama, ZynZyn;
         public Text TukiKuukaudetText, NopatText, RahatText, VapaaAikaText, OlutText, NalkaText, KofeiiniText, MotivaatioText, PsykoosiText, RakkausElamaText;
-        public GameObject PopupImage, RigidBodyFPSController;
+        public GameObject PopupImage, RigidBodyFPSController, GameOverImage;
         public AudioClip ShotgunSound, EatSound, DiceSound, GameSound, StomachSound, VomitSound, VictorySound;
         public float Promillet = 0.0f;
+        public Image OluttaImage;
+        public GameObject Radio;
 
         private AudioSource audioSource;
 
@@ -28,32 +30,34 @@ namespace UEFSimulator
 
         private bool popupActive = false;
         private bool increasePopupTimer;
+        private RigidbodyFirstPersonController fpsController;
 
+        private bool GameStarted = false;
 
         // Start is called before the first frame update
         void Start()
         {
             PopupImage.SetActive(false);
             audioSource = GetComponent<AudioSource>();
+            fpsController = RigidBodyFPSController.GetComponent<RigidbodyFirstPersonController>();
         }
 
         // Update is called once per frame
         void Update()
         {
             if (GameOver) {
-                if (Input.GetKeyDown(KeyCode.Space))
+                if (Input.GetKeyDown(KeyCode.Return))
                 {
                     GameOver = false;
-                    SceneManager.LoadScene("LaitosScene", LoadSceneMode.Single);
+                    SceneManager.LoadScene("MainMenuScene", LoadSceneMode.Single);
                 }
             }
             else
             {
                 updateUIText();
 
-                if (Input.GetKeyDown(KeyCode.Alpha1))
+                if (Input.GetKeyDown(KeyCode.Return))
                 {
-                    Debug.Log("pressed key");
                     PopupImage.SetActive(false);
                     popupActive = false;
                 }
@@ -71,7 +75,7 @@ namespace UEFSimulator
                 {
                     IncreaseHunger();
                     dayTimer = 0;
-                    Promillet--;
+                    Promillet -= 3.5f;
                     if (Promillet < 50) RakkausElama = false;
                     if (Promillet < 0) Promillet = 0;
                 }
@@ -86,6 +90,28 @@ namespace UEFSimulator
 
 
                 if (increasePopupTimer) timerBeforeNextPopupAllowed += Time.deltaTime;
+                if (Promillet < 10)
+                {
+                    fpsController.movementSettings.ForwardSpeed = 8.0f;
+                    OluttaImage.color = new Color32(255, 255, 255, 0);
+                }
+                if (Promillet > 10)
+                {
+                    fpsController.movementSettings.ForwardSpeed = 6.0f;
+                    OluttaImage.color = new Color32(255, 255, 255, 60);
+                }
+                if (Promillet > 20)
+                {
+                    fpsController.movementSettings.ForwardSpeed = 4.5f;
+                    OluttaImage.color = new Color32(255, 255, 255, 120);
+                }
+                if (Promillet > 30)
+                {
+                    fpsController.movementSettings.ForwardSpeed = 2.5f;
+                    OluttaImage.color = new Color32(255, 255, 255, 180);
+                }
+                var asd = Promillet * 5;
+                OluttaImage.color = new Color32(255, 255, 255, System.Convert.ToByte(asd));
             }
         }
 
@@ -95,7 +121,8 @@ namespace UEFSimulator
             NopatText.text = "Nopat: " + Nopat + " op";
             RahatText.text = "Rahat: " + Rahat + "€";
             VapaaAikaText.text = "Vapaa-aika: " + VapaaAika + " min";
-            OlutText.text = "Promillet: " + System.Math.Round(Promillet / 30, 2); ;
+            OlutText.text = "Promillet: " + System.Math.Round(Promillet / 30, 2);
+
             NalkaText.text = "Nälkä: " + Nalka;
             KofeiiniText.text = "Kofeiini: " + Kofeiini + " mg";
             MotivaatioText.text = "Motivaatio: " + Motivaatio + "%";
@@ -131,7 +158,7 @@ namespace UEFSimulator
                 if (randNumber == 13)
                 {
                     PlaySound(VomitSound);
-                    ShowPopup("Sait Kemeristä vatsataudin, joka on tappava. Game over!\n\nPaina Välilyönti aloittaaksesi uuden pelin.");
+                    ShowPopup("Sait Kemeristä vatsataudin, joka on tappava. Game over!\n\nPaina Enter aloittaaksesi uuden pelin.");
                     LoseGame();
                 }
 
@@ -142,9 +169,9 @@ namespace UEFSimulator
 
         public void Drink()
         {
-            if (Rahat >= 100)
+            if (Rahat >= 45)
             {
-                DecreaseMoney(100);
+                DecreaseMoney(45);
                 DecreasePsychosis();
                 IncreaseBeer();
                 IncreaseHunger();
@@ -157,9 +184,33 @@ namespace UEFSimulator
             }
         }
 
+        public void Work()
+        {
+            if (Nopat > 180)
+            {
+                Rahat += 200;
+                IncreaseHunger();
+                IncreasePsychosis();
+                DecreaseMotivation();
+                IncreasePsychosis();
+                DecreaseMotivation();
+            }
+            else
+            {
+                int rand = Random.Range(1, 7);
+                if(rand == 1) ShowPopup("Sinulla ei ole tarpeeksi opintopisteitä, joten kukaan ei halua palkata sinua.\n\nPaina Enter masentuaksesi.");
+                else if (rand == 2) ShowPopup("Sinulla ei ole tarpeeksi työkokemusta, joten kukaan ei halua palkata sinua.\n\nPaina Enter masentuaksesi.");
+                else if (rand == 3) ShowPopup("Olet liian ruma, joten kukaan ei halua palkata sinua.\n\nPaina Enter masentuaksesi.");
+                else if (rand == 4) ShowPopup("Oksensit haastattelijan kengille, joten sinua ei palkattu.\n\nPaina Enter masentuaksesi.");
+                else if (rand == 5) ShowPopup("Työhaastattelijan koira söi työhakemuksesi.\n\nPaina Enter masentuaksesi.");
+                else if (rand == 6) ShowPopup("Insert jokin tekosyy miksi et pääse töihin.\n\nPaina Enter masentuaksesi.");
+                else if (rand == 7) ShowPopup("Et sovi työyhteisön sosiaalisiin normeihin.\n\nPaina Enter masentuaksesi.");
+            }
+        }
+
         public void IncreaseBeer()
         {
-            Promillet += 10;
+            Promillet += 7;
             if(Promillet > 50)
             {
 
@@ -173,13 +224,18 @@ namespace UEFSimulator
             IncreaseHunger();
             RakkausElama = false;
         }
+
+        public void Vending()
+        {
+            ShowPopup("Sinulla ei ole kolikoita mukanasi, joten et voi ostaa energiajuomaa.\n\nPaina Enter kärsiäksesi vieroitusoireista.");
+        }
         #endregion
 
         private void ShowPopup(string text)
         {
-            //if (popupMonth == TukiKuukaudet) return;
             PopupImage.SetActive(true);
             PopupImage.GetComponentInChildren<Text>().text = text;
+            Debug.Log("Showing popup " + text);
         }
 
         #region Modify stats
@@ -199,12 +255,12 @@ namespace UEFSimulator
 
         private void DecreaseMotivation()
         {
-            Motivaatio -= 1 * MotivationPenalty;
+            Motivaatio -= 1 + (1* MotivationPenalty);
             if (Motivaatio <= 0)
             {
                 Motivaatio = 0;
                 PlaySound(ShotgunSound);
-                ShowPopup("Motivaatiosi opiskella loppui. Hävisit pelin!\n\nPaina Välilyönti aloittaaksesi uuden pelin.");
+                ShowPopup("Motivaatiosi opiskella loppui. Hävisit pelin!\n\nPaina Enter aloittaaksesi uuden pelin.");
                 LoseGame();
             }
         }
@@ -228,9 +284,11 @@ namespace UEFSimulator
             if (Rahat <= 0)
             {
                 Rahat = 0;
+                Debug.Log("Rahat loppu" + popupActive);
                 if (popupActive) return;
                 int randNumber = Random.Range(1, 10);
                 popupActive = true;
+                
                 // Random events from money running out
                 if (randNumber == 7)
                 {
@@ -251,7 +309,7 @@ namespace UEFSimulator
             if (Nalka >= 100)
             {
                 PlaySound(StomachSound);
-                ShowPopup("Kuolit nälkään. Olisit käynyt Kemerissä!\n\nPaina Välilyönti aloittaaksesi uuden pelin.");
+                ShowPopup("Kuolit nälkään. Olisit käynyt Kemerissä!\n\nPaina Enter aloittaaksesi uuden pelin.");
                 LoseGame();
             }
         }
@@ -273,10 +331,10 @@ namespace UEFSimulator
 
         private void IncreasePsychosis()
         {
-            Psykoosi++;
+            Psykoosi += 2;
             if (Psykoosi >= 100)
             {
-                ShowPopup("Liian kovat psykoosit tulilla! Hävisit pelin.\n\nPaina Välilyönti aloittaaksesi uuden pelin.");
+                ShowPopup("Liian kovat psykoosit tulilla! Hävisit pelin.\n\nPaina Enter aloittaaksesi uuden pelin.");
                 LoseGame();
             }
         }
@@ -286,7 +344,7 @@ namespace UEFSimulator
             Nopat += 3;
             if (Nopat >= 300)
             {
-                ShowPopup("Onnittelut! Toisin kuin suurin osa opiskelijoista, sinä valmistuit ajoissa. Amanuenssi on tyytyväinen.\n\nPaina Välilyönti voittaaksesi pelin.");
+                ShowPopup("Onnittelut! Toisin kuin suurin osa opiskelijoista, sinä valmistuit ajoissa. Amanuenssi on tyytyväinen.\n\nPaina Enter voittaaksesi pelin.");
                 audioSource.Stop();
                 PlaySound(VictorySound);
                 LoseGame();
@@ -296,14 +354,16 @@ namespace UEFSimulator
 
         private void IncreaseMotivation()
         {
-            Motivaatio++;
+            Motivaatio += 4;
             if (Motivaatio > 100) Motivaatio = 100;
         }
 
         #endregion
         private void LoseGame()
         {
-            PopupImage.transform.parent.gameObject.SetActive(true);
+            GameOverImage.SetActive(true);
+            PopupImage.SetActive(true);
+            Radio.GetComponent<AudioSource>().Stop();
             GameOver = true;
             RigidBodyFPSController.GetComponent<RigidbodyFirstPersonController>().enabled = false;
         }

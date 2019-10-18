@@ -42,6 +42,14 @@ namespace UEFSimulator
                         case "Beer":
                             ItemImage.text = "Juo kaljaa Jolenessa";
                             break;
+
+                        case "Work":
+                            ItemImage.text = "Mene töihin ja hajoa intialaisiin koodareihin";
+                            break;
+
+                        case "Vending":
+                            ItemImage.text = "Osta energiajuomaa";
+                            break;
                     }
                 }
             }
@@ -71,6 +79,14 @@ namespace UEFSimulator
 
                         case "Beer":
                             CtrlScript.Drink();
+                            break;
+
+                        case "Work":
+                            CtrlScript.Work();
+                            break;
+
+                        case "Vending":
+                            CtrlScript.Vending();
                             break;
                     }
 

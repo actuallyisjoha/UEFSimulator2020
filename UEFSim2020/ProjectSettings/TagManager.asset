@@ -8,6 +8,8 @@ TagManager:
   - Food
   - Game
   - Beer
+  - Work
+  - Vending
   layers:
   - Default
   - TransparentFX
