@@ -28,15 +28,14 @@ namespace UEFSimulator
         private float monthTimer = 0.0f;
         private float timerBeforeNextPopupAllowed = 0.0f;
 
-        private bool popupActive = false;
-        private bool increasePopupTimer;
+        public static bool popupActive = false;
         private RigidbodyFirstPersonController fpsController;
 
-        private bool GameStarted = false;
-
+        //private bool GameStarted = false;
         // Start is called before the first frame update
         void Start()
         {
+            popupActive = false;
             PopupImage.SetActive(false);
             audioSource = GetComponent<AudioSource>();
             fpsController = RigidBodyFPSController.GetComponent<RigidbodyFirstPersonController>();
@@ -89,7 +88,7 @@ namespace UEFSimulator
                 }
 
 
-                if (increasePopupTimer) timerBeforeNextPopupAllowed += Time.deltaTime;
+                //if (increasePopupTimer) timerBeforeNextPopupAllowed += Time.deltaTime;
                 if (Promillet < 10)
                 {
                     fpsController.movementSettings.ForwardSpeed = 8.0f;
@@ -111,7 +110,17 @@ namespace UEFSimulator
                     OluttaImage.color = new Color32(255, 255, 255, 180);
                 }
                 var asd = Promillet * 5;
-                OluttaImage.color = new Color32(255, 255, 255, System.Convert.ToByte(asd));
+                
+                try {
+                    byte byteasd = System.Convert.ToByte(asd);
+                    if (byteasd > 210) byteasd = 210;
+                    OluttaImage.color = new Color32(255, 255, 255, byteasd);
+                }
+                catch
+                {
+                    OluttaImage.color = new Color32(255, 255, 255, 210);
+                }
+                
             }
         }
 
@@ -141,7 +150,14 @@ namespace UEFSimulator
 
             IncreaseHunger();
             IncreasePsychosis();
-            IncreaseDice();
+
+            int rand = Random.Range(1, 12);
+            if(rand != 4)
+                IncreaseDice();
+            else
+            {
+                ShowPopup("Et päässyt kurssia läpi!\n\nPaina Enter vittuuntuaksesi.");
+            }
             RakkausElama = false;
         }
 
@@ -153,7 +169,7 @@ namespace UEFSimulator
                 DecreaseMoney(4);
                 DecreaseHunger();
 
-                int randNumber = Random.Range(1, 40);
+                int randNumber = Random.Range(1, 35);
                 // Random events from money running out
                 if (randNumber == 13)
                 {
@@ -175,10 +191,19 @@ namespace UEFSimulator
                 DecreasePsychosis();
                 IncreaseBeer();
                 IncreaseHunger();
-
-                if (Promillet > 50)
+                if (Promillet > 30)
                 {
-                    if(Random.Range(1,5) == 3) RakkausElama = true;
+                    int rand = Random.Range(1, 5);
+                    if (rand == 1)
+                    {
+                        RakkausElama = true;
+                        int rand2 = Random.Range(1, 4);
+                        if(rand2 == 1) ShowPopup("Kompastuit karaokelavalta astuessasi pois ja lensit hurmaavan henkilön päälle!\n\nPaina Enter saadaksesi klamydian.");
+                        else if (rand2 == 2) ShowPopup("Kompastuit karaokelavalta astuessasi pois ja lensit hurmaavan henkilön päälle!\n\nPaina Enter saadaksesi tippurin.");
+                        else if (rand2 == 3) ShowPopup("Kompastuit karaokelavalta astuessasi pois ja lensit hurmaavan henkilön päälle!\n\nPaina Enter saadaksesi HIV:n.");
+                        else ShowPopup("Kompastuit karaokelavalta astuessasi pois ja lensit hurmaavan henkilön päälle!\n\nPaina Enter saadaksesi kondylooman.");
+
+                    }
                 }
                 else RakkausElama = false;
             }
@@ -234,8 +259,8 @@ namespace UEFSimulator
         private void ShowPopup(string text)
         {
             PopupImage.SetActive(true);
+            popupActive = true;
             PopupImage.GetComponentInChildren<Text>().text = text;
-            Debug.Log("Showing popup " + text);
         }
 
         #region Modify stats
@@ -284,8 +309,7 @@ namespace UEFSimulator
             if (Rahat <= 0)
             {
                 Rahat = 0;
-                Debug.Log("Rahat loppu" + popupActive);
-                if (popupActive) return;
+                //if (popupActive) return;
                 int randNumber = Random.Range(1, 10);
                 popupActive = true;
                 

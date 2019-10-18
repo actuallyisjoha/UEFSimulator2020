@@ -1,20 +1,23 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class MainMenuScript : MonoBehaviour
+namespace UEFSimulator
 {
-    // Start is called before the first frame update
-    void Start()
+    public class MainMenuScript : MonoBehaviour
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
+        // Start is called before the first frame update
+        void Start()
         {
-            SceneManager.LoadScene("LaitosScene", LoadSceneMode.Single);
+
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
+            {
+                SceneManager.LoadScene("LaitosScene", LoadSceneMode.Single);
+            }
         }
     }
 }

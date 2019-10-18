@@ -17,7 +17,6 @@ namespace UEFSimulator
             Ray ray = Camera.ViewportPointToRay(Vector3.one / 2f);
             Debug.DrawRay(ray.origin, ray.direction * 2f, Color.red);
 
-
             RaycastHit hitInfo;
             if (Physics.Raycast(ray, out hitInfo, 3f, LayerMask))
             {
@@ -61,7 +60,7 @@ namespace UEFSimulator
             if (SelectedItem != null)
             {
                 ItemImage.gameObject.SetActive(true);
-                if (Input.GetKeyDown(KeyCode.E))
+                if (Input.GetKeyDown(KeyCode.E) && !ControllerScript.popupActive)
                 {
                     switch (hitInfo.transform.tag)
                     {
