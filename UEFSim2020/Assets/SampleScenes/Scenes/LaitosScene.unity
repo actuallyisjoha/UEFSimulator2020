@@ -767,6 +767,7 @@ GameObject:
   m_Component:
   - component: {fileID: 115410981}
   - component: {fileID: 115410982}
+  - component: {fileID: 115410983}
   m_Layer: 0
   m_Name: ControllerObject
   m_TagString: Untagged
@@ -807,8 +808,10 @@ MonoBehaviour:
   Olut: 0
   Nalka: 0
   Kofeiini: 100
-  Motivaatio: 100
+  Motivaatio: 10
   Psykoosi: 0
+  MotivationPenalty: 1
+  MonthlyAllowance: 350
   RakkausElama: 0
   ZynZyn: 0
   TukiKuukaudetText: {fileID: 2112940694}
@@ -823,8 +826,108 @@ MonoBehaviour:
   RakkausElamaText: {fileID: 261849401}
   PopupImage: {fileID: 183622767}
   RigidBodyFPSController: {fileID: 883800625}
-  MotivationPenalty: 1
-  MonthlyAllowance: 350
+  ShotgunSound: {fileID: 8300000, guid: bc7a5e874ae40624388e80052a0713d8, type: 3}
+  EatSound: {fileID: 8300000, guid: e452817c7f54c554cb5e6f0b9fe9cc09, type: 3}
+  DiceSound: {fileID: 8300000, guid: 94158053abdaf5c49806c152a8a7f407, type: 3}
+  GameSound: {fileID: 8300000, guid: a1484b8c0d98afb43abb620b6f1005eb, type: 3}
+  StomachSound: {fileID: 8300000, guid: 0619a716d2561b64b9626a623c2a9091, type: 3}
+  VomitSound: {fileID: 8300000, guid: c98306c79b0fda248bc1fdc0fc6159bb, type: 3}
+--- !u!82 &115410983
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 115410980}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 1
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1001 &126786716
 PrefabInstance:
   m_ObjectHideFlags: 0

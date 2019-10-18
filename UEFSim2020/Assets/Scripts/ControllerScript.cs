@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityStandardAssets.Characters.FirstPerson;
 
@@ -8,34 +6,32 @@ namespace UEFSimulator
 {
     public class ControllerScript : MonoBehaviour
     {
-        public int TukiKuukaudet, Nopat, Rahat, VapaaAika, Olut, Nalka, Kofeiini, Motivaatio, Psykoosi;
+        public static bool GameOver = false;
+        public int TukiKuukaudet, Nopat, Rahat, VapaaAika, Olut, Nalka, Kofeiini, Motivaatio, Psykoosi, MotivationPenalty, MonthlyAllowance;
         public bool RakkausElama, ZynZyn;
         public Text TukiKuukaudetText, NopatText, RahatText, VapaaAikaText, OlutText, NalkaText, KofeiiniText, MotivaatioText, PsykoosiText, RakkausElamaText;
-        public GameObject PopupImage;
-        public GameObject RigidBodyFPSController;
+        public GameObject PopupImage, RigidBodyFPSController;
+        public AudioClip ShotgunSound, EatSound, DiceSound, GameSound, StomachSound, VomitSound;
 
+        private AudioSource audioSource;
+
+        private int popupMonth = 0;
         private float secondTime = 0.05f;
         private float secondTimer = 0.0f;
         private float dayTime = 2.0f;
         private float dayTimer = 0.0f;
         private float monthTime = 5.0f;
         private float monthTimer = 0.0f;
-
-        public int MotivationPenalty = 1;
-        public int MonthlyAllowance;
+        private float timerBeforeNextPopupAllowed = 0.0f;
 
         private bool popupActive = false;
-        private float timerBeforeNextPopupAllowed = 0.0f;
         private bool increasePopupTimer;
-
-        public static bool GameOver = false;
-
-        private int popupMonth = 0;
 
         // Start is called before the first frame update
         void Start()
         {
             PopupImage.SetActive(false);
+            audioSource = GetComponent<AudioSource>();
         }
 
         // Update is called once per frame
@@ -77,7 +73,6 @@ namespace UEFSimulator
             if (increasePopupTimer) timerBeforeNextPopupAllowed += Time.deltaTime;
         }
 
-
         void updateUIText()
         {
             TukiKuukaudetText.text = "Tukikuukausia jäljellä: " + TukiKuukaudet + " kk";
@@ -96,6 +91,7 @@ namespace UEFSimulator
         #region PlayerActions
         public void Study()
         {
+            PlaySound(DiceSound);
             DecreaseMotivation();
             DecreaseFreeTime();
             DecreaseCaffeine();
@@ -109,6 +105,7 @@ namespace UEFSimulator
         {
             if (Rahat >= 4)
             {
+                PlaySound(EatSound);
                 DecreaseMoney(4);
                 DecreaseHunger();
 
@@ -116,7 +113,9 @@ namespace UEFSimulator
                 // Random events from money running out
                 if (randNumber == 13)
                 {
-                    ShowPopup("Sait vatsataudin syötyäsi Kemerissä!\n1) OK");
+                    PlaySound(VomitSound);
+                    ShowPopup("Sait Kemeristä vatsataudin, joka on tappava. Game over!");
+                    LoseGame();
                 }
 
                 popupMonth = TukiKuukaudet;
@@ -125,6 +124,7 @@ namespace UEFSimulator
 
         public void Game()
         {
+            PlaySound(GameSound);
             IncreaseMotivation();
             IncreaseHunger();
         }
@@ -132,7 +132,7 @@ namespace UEFSimulator
 
         private void ShowPopup(string text)
         {
-            if (popupMonth == TukiKuukaudet) return;
+            //if (popupMonth == TukiKuukaudet) return;
             PopupImage.SetActive(true);
             PopupImage.GetComponentInChildren<Text>().text = text;
             
@@ -156,7 +156,13 @@ namespace UEFSimulator
         private void DecreaseMotivation()
         {
             Motivaatio -= 1 * MotivationPenalty;
-            if (Motivaatio <= 0) LoseGame();
+            if (Motivaatio <= 0)
+            {
+                Motivaatio = 0;
+                PlaySound(ShotgunSound);
+                ShowPopup("Motivaatiosi opiskella loppui. Hävisit pelin!");
+                LoseGame();
+            }
         }
 
         private void DecreaseFreeTime()
@@ -173,6 +179,7 @@ namespace UEFSimulator
 
         private void DecreaseMoney(int value)
         {
+            if(Rahat == 0) return;
             Rahat -= value;
             if (Rahat <= 0)
             {
@@ -198,6 +205,7 @@ namespace UEFSimulator
             Nalka += 3;
             if (Nalka >= 100)
             {
+                PlaySound(StomachSound);
                 ShowPopup("Kuolit nälkään. Olisit käynyt Kemerissä!");
                 LoseGame();
             }
@@ -232,6 +240,12 @@ namespace UEFSimulator
         {
             GameOver = true;
             RigidBodyFPSController.GetComponent<RigidbodyFirstPersonController>().enabled = false;
+        }
+
+        private void PlaySound(AudioClip clip)
+        {
+            if (audioSource.isPlaying) audioSource.Stop();
+            audioSource.PlayOneShot(clip);
         }
     }
 }
