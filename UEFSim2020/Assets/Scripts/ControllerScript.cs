@@ -109,7 +109,7 @@ namespace UEFSimulator
                 DecreaseMoney(4);
                 DecreaseHunger();
 
-                int randNumber = Random.Range(1, 25);
+                int randNumber = Random.Range(1, 40);
                 // Random events from money running out
                 if (randNumber == 13)
                 {
@@ -135,7 +135,6 @@ namespace UEFSimulator
             //if (popupMonth == TukiKuukaudet) return;
             PopupImage.SetActive(true);
             PopupImage.GetComponentInChildren<Text>().text = text;
-            
         }
 
         #region Modify stats
@@ -203,6 +202,7 @@ namespace UEFSimulator
         private void IncreaseHunger()
         {
             Nalka += 3;
+            if(Nalka > 60 && Nalka < 70) PlaySound(StomachSound);
             if (Nalka >= 100)
             {
                 PlaySound(StomachSound);
@@ -213,14 +213,18 @@ namespace UEFSimulator
 
         private void DecreaseHunger()
         {
-            Nalka -= 15;
+            Nalka -= 40;
             if (Nalka < 0) Nalka = 0;
         }
 
         private void IncreasePsychosis()
         {
             Psykoosi++;
-            if (Psykoosi >= 100) LoseGame();
+            if (Psykoosi >= 100)
+            {
+                ShowPopup("Liian kovat psykoosit tulilla! Hävisit pelin.");
+                LoseGame();
+            }
         }
 
         private void IncreaseDice()
@@ -238,6 +242,7 @@ namespace UEFSimulator
         #endregion
         private void LoseGame()
         {
+            PopupImage.transform.parent.gameObject.SetActive(true);
             GameOver = true;
             RigidBodyFPSController.GetComponent<RigidbodyFirstPersonController>().enabled = false;
         }
