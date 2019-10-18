@@ -38,6 +38,10 @@ namespace UEFSimulator
                         case "Game":
                             ItemImage.text = "Pelaa peliä";
                             break;
+
+                        case "Beer":
+                            ItemImage.text = "Juo kaljaa Jolenessa";
+                            break;
                     }
                 }
             }
@@ -63,6 +67,10 @@ namespace UEFSimulator
 
                         case "Game":
                             CtrlScript.Game();
+                            break;
+
+                        case "Beer":
+                            CtrlScript.Drink();
                             break;
                     }
 

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityStandardAssets.Characters.FirstPerson;
 
@@ -7,25 +8,27 @@ namespace UEFSimulator
     public class ControllerScript : MonoBehaviour
     {
         public static bool GameOver = false;
-        public int TukiKuukaudet, Nopat, Rahat, VapaaAika, Olut, Nalka, Kofeiini, Motivaatio, Psykoosi, MotivationPenalty, MonthlyAllowance;
+        public int TukiKuukaudet, Nopat, Rahat, VapaaAika, Nalka, Kofeiini, Motivaatio, Psykoosi, MotivationPenalty, MonthlyAllowance;
         public bool RakkausElama, ZynZyn;
         public Text TukiKuukaudetText, NopatText, RahatText, VapaaAikaText, OlutText, NalkaText, KofeiiniText, MotivaatioText, PsykoosiText, RakkausElamaText;
         public GameObject PopupImage, RigidBodyFPSController;
-        public AudioClip ShotgunSound, EatSound, DiceSound, GameSound, StomachSound, VomitSound;
+        public AudioClip ShotgunSound, EatSound, DiceSound, GameSound, StomachSound, VomitSound, VictorySound;
+        public float Promillet = 0.0f;
 
         private AudioSource audioSource;
 
         private int popupMonth = 0;
-        private float secondTime = 0.05f;
+        private float secondTime = 0.1f;
         private float secondTimer = 0.0f;
-        private float dayTime = 2.0f;
+        private float dayTime = 2.5f;
         private float dayTimer = 0.0f;
-        private float monthTime = 5.0f;
+        private float monthTime = 6.0f;
         private float monthTimer = 0.0f;
         private float timerBeforeNextPopupAllowed = 0.0f;
 
         private bool popupActive = false;
         private bool increasePopupTimer;
+
 
         // Start is called before the first frame update
         void Start()
@@ -37,40 +40,53 @@ namespace UEFSimulator
         // Update is called once per frame
         void Update()
         {
-            if(GameOver) return;
-            updateUIText();
-
-            if (Input.GetKeyDown(KeyCode.Alpha1))
-            {
-                Debug.Log("pressed key");
-                PopupImage.SetActive(false);
-                popupActive = false;
+            if (GameOver) {
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    GameOver = false;
+                    SceneManager.LoadScene("LaitosScene", LoadSceneMode.Single);
+                }
             }
-
-            dayTimer += Time.deltaTime;
-            if (dayTimer > dayTime)
+            else
             {
-                IncreaseHunger();
-                dayTimer = 0;
+                updateUIText();
+
+                if (Input.GetKeyDown(KeyCode.Alpha1))
+                {
+                    Debug.Log("pressed key");
+                    PopupImage.SetActive(false);
+                    popupActive = false;
+                }
+
+                secondTimer += Time.deltaTime;
+                if (secondTimer > secondTime)
+                {
+                    DecreaseMoney(4);
+                    secondTimer = 0;
+                    
+                }
+
+                dayTimer += Time.deltaTime;
+                if (dayTimer > dayTime)
+                {
+                    IncreaseHunger();
+                    dayTimer = 0;
+                    Promillet--;
+                    if (Promillet < 50) RakkausElama = false;
+                    if (Promillet < 0) Promillet = 0;
+                }
+
+                monthTimer += Time.deltaTime;
+                if (monthTimer > monthTime)
+                {
+                    Rahat += MonthlyAllowance;
+                    DecreaseMonths();
+                    monthTimer = 0;
+                }
+
+
+                if (increasePopupTimer) timerBeforeNextPopupAllowed += Time.deltaTime;
             }
-
-            secondTimer += Time.deltaTime;
-            if (secondTimer > secondTime)
-            {
-                DecreaseMoney(2);
-                secondTimer = 0;
-            }
-
-            monthTimer += Time.deltaTime;
-            if (monthTimer > monthTime)
-            {
-                Rahat += MonthlyAllowance;
-                DecreaseMonths();
-                monthTimer = 0;
-            }
-
-
-            if (increasePopupTimer) timerBeforeNextPopupAllowed += Time.deltaTime;
         }
 
         void updateUIText()
@@ -79,7 +95,7 @@ namespace UEFSimulator
             NopatText.text = "Nopat: " + Nopat + " op";
             RahatText.text = "Rahat: " + Rahat + "€";
             VapaaAikaText.text = "Vapaa-aika: " + VapaaAika + " min";
-            OlutText.text = "Olut: " + Olut + " l";
+            OlutText.text = "Promillet: " + System.Math.Round(Promillet / 30, 2); ;
             NalkaText.text = "Nälkä: " + Nalka;
             KofeiiniText.text = "Kofeiini: " + Kofeiini + " mg";
             MotivaatioText.text = "Motivaatio: " + Motivaatio + "%";
@@ -96,9 +112,10 @@ namespace UEFSimulator
             DecreaseFreeTime();
             DecreaseCaffeine();
 
-            IncreaseDice();
             IncreaseHunger();
             IncreasePsychosis();
+            IncreaseDice();
+            RakkausElama = false;
         }
 
         public void Eat()
@@ -114,11 +131,38 @@ namespace UEFSimulator
                 if (randNumber == 13)
                 {
                     PlaySound(VomitSound);
-                    ShowPopup("Sait Kemeristä vatsataudin, joka on tappava. Game over!");
+                    ShowPopup("Sait Kemeristä vatsataudin, joka on tappava. Game over!\n\nPaina Välilyönti aloittaaksesi uuden pelin.");
                     LoseGame();
                 }
 
                 popupMonth = TukiKuukaudet;
+                RakkausElama = false;
+            }
+        }
+
+        public void Drink()
+        {
+            if (Rahat >= 100)
+            {
+                DecreaseMoney(100);
+                DecreasePsychosis();
+                IncreaseBeer();
+                IncreaseHunger();
+
+                if (Promillet > 50)
+                {
+                    if(Random.Range(1,5) == 3) RakkausElama = true;
+                }
+                else RakkausElama = false;
+            }
+        }
+
+        public void IncreaseBeer()
+        {
+            Promillet += 10;
+            if(Promillet > 50)
+            {
+
             }
         }
 
@@ -127,6 +171,7 @@ namespace UEFSimulator
             PlaySound(GameSound);
             IncreaseMotivation();
             IncreaseHunger();
+            RakkausElama = false;
         }
         #endregion
 
@@ -159,7 +204,7 @@ namespace UEFSimulator
             {
                 Motivaatio = 0;
                 PlaySound(ShotgunSound);
-                ShowPopup("Motivaatiosi opiskella loppui. Hävisit pelin!");
+                ShowPopup("Motivaatiosi opiskella loppui. Hävisit pelin!\n\nPaina Välilyönti aloittaaksesi uuden pelin.");
                 LoseGame();
             }
         }
@@ -206,7 +251,7 @@ namespace UEFSimulator
             if (Nalka >= 100)
             {
                 PlaySound(StomachSound);
-                ShowPopup("Kuolit nälkään. Olisit käynyt Kemerissä!");
+                ShowPopup("Kuolit nälkään. Olisit käynyt Kemerissä!\n\nPaina Välilyönti aloittaaksesi uuden pelin.");
                 LoseGame();
             }
         }
@@ -217,20 +262,36 @@ namespace UEFSimulator
             if (Nalka < 0) Nalka = 0;
         }
 
+        private void DecreasePsychosis()
+        {
+            Psykoosi -= 10;
+            if (Psykoosi < 0)
+            {
+                Psykoosi = 0;
+            }
+        }
+
         private void IncreasePsychosis()
         {
             Psykoosi++;
             if (Psykoosi >= 100)
             {
-                ShowPopup("Liian kovat psykoosit tulilla! Hävisit pelin.");
+                ShowPopup("Liian kovat psykoosit tulilla! Hävisit pelin.\n\nPaina Välilyönti aloittaaksesi uuden pelin.");
                 LoseGame();
             }
         }
 
         private void IncreaseDice()
         {
-            Nopat++;
-            if (Nopat >= 300) Debug.Log("Kutittaa. Voitit pelin.");
+            Nopat += 3;
+            if (Nopat >= 300)
+            {
+                ShowPopup("Onnittelut! Toisin kuin suurin osa opiskelijoista, sinä valmistuit ajoissa. Amanuenssi on tyytyväinen.\n\nPaina Välilyönti voittaaksesi pelin.");
+                audioSource.Stop();
+                PlaySound(VictorySound);
+                LoseGame();
+            }
+           
         }
 
         private void IncreaseMotivation()
