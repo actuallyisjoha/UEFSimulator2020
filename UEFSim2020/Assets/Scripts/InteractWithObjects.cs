@@ -1,74 +1,78 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class InteractWithObjects : MonoBehaviour
+namespace UEFSimulator
 {
-    public ControllerScript CtrlScript;
-    public Camera Camera;
-    public LayerMask LayerMask;
-    public Text ItemImage;
-    private Item SelectedItem;
-
-    void Update()
+    public class InteractWithObjects : MonoBehaviour
     {
-        Ray ray = Camera.ViewportPointToRay(Vector3.one / 2f);
-        Debug.DrawRay(ray.origin, ray.direction * 2f, Color.red);
+        public ControllerScript CtrlScript;
+        public Camera Camera;
+        public LayerMask LayerMask;
+        public Text ItemImage;
+        private Item SelectedItem;
 
-
-        RaycastHit hitInfo;
-        if (Physics.Raycast(ray, out hitInfo, 3f, LayerMask))
+        void Update()
         {
-            var hitItem = hitInfo.collider.GetComponent<Item>();
-            if (hitItem != null)
+            if (ControllerScript.GameOver) return;
+            Ray ray = Camera.ViewportPointToRay(Vector3.one / 2f);
+            Debug.DrawRay(ray.origin, ray.direction * 2f, Color.red);
+
+
+            RaycastHit hitInfo;
+            if (Physics.Raycast(ray, out hitInfo, 3f, LayerMask))
             {
-                SelectedItem = hitItem;
-                switch (hitInfo.transform.tag)
+                var hitItem = hitInfo.collider.GetComponent<Item>();
+                if (hitItem != null)
                 {
-                    case "Computer":
-                        ItemImage.text = "Opiskele";
-                        break;
+                    SelectedItem = hitItem;
+                    switch (hitInfo.transform.tag)
+                    {
+                        case "Computer":
+                            ItemImage.text = "Opiskele";
+                            break;
 
-                    case "Food":
-                        ItemImage.text = "Syö Kemerissä";
-                        break;
+                        case "Food":
+                            ItemImage.text = "Syö Kemerissä";
+                            break;
 
-                    case "Game":
-                        ItemImage.text = "Pelaa peliä";
-                        break;
+                        case "Game":
+                            ItemImage.text = "Pelaa peliä";
+                            break;
+                    }
                 }
             }
-        }
-        else
-        {
-            SelectedItem = null;
-        }
-
-        if (SelectedItem != null)
-        {
-            ItemImage.gameObject.SetActive(true);
-            if (Input.GetKeyDown(KeyCode.E))
+            else
             {
-                switch (hitInfo.transform.tag)
+                SelectedItem = null;
+            }
+
+            if (SelectedItem != null)
+            {
+                ItemImage.gameObject.SetActive(true);
+                if (Input.GetKeyDown(KeyCode.E))
                 {
-                    case "Computer":
-                        CtrlScript.Study();
-                        break;
+                    switch (hitInfo.transform.tag)
+                    {
+                        case "Computer":
+                            CtrlScript.Study();
+                            break;
 
-                    case "Food":
-                        CtrlScript.Eat();
-                        break;
+                        case "Food":
+                            CtrlScript.Eat();
+                            break;
 
-                    case "Game":
-                        CtrlScript.Game();
-                        break;
+                        case "Game":
+                            CtrlScript.Game();
+                            break;
+                    }
+
                 }
-
+            }
+            else
+            {
+                ItemImage.gameObject.SetActive(false);
             }
         }
-        else
-        {
-            ItemImage.gameObject.SetActive(false);
-        }
+
     }
-
 }
