@@ -8,14 +8,16 @@ namespace UEFSimulator
     public class ControllerScript : MonoBehaviour
     {
         public static bool GameOver = false;
-        public int TukiKuukaudet, Nopat, Rahat, VapaaAika, Nalka, Kofeiini, Motivaatio, Psykoosi, MotivationPenalty, MonthlyAllowance;
+        public int TukiKuukaudet, Nopat, Rahat, VapaaAika, Nalka, Kofeiini, Motivaatio, Psykoosi, MotivationPenalty, MonthlyAllowance, Kolikot;
         public bool RakkausElama, ZynZyn;
         public Text TukiKuukaudetText, NopatText, RahatText, VapaaAikaText, OlutText, NalkaText, KofeiiniText, MotivaatioText, PsykoosiText, RakkausElamaText;
         public GameObject PopupImage, RigidBodyFPSController, GameOverImage;
-        public AudioClip ShotgunSound, EatSound, DiceSound, GameSound, StomachSound, VomitSound, VictorySound;
+        public AudioClip ShotgunSound, EatSound, DiceSound, GameSound, StomachSound, VomitSound, VictorySound, OluttaSound, BottleSound, VendSound;
         public float Promillet = 0.0f;
         public Image OluttaImage;
         public GameObject Radio;
+
+        private bool virgin = true;
 
         private AudioSource audioSource;
 
@@ -31,6 +33,8 @@ namespace UEFSimulator
         public static bool popupActive = false;
         private RigidbodyFirstPersonController fpsController;
 
+        private bool ekaVuosiPopUp, tokaVuosiPopup, kolmasVuosiPopup, neljasVuosiPopup;
+
         //private bool GameStarted = false;
         // Start is called before the first frame update
         void Start()
@@ -39,6 +43,8 @@ namespace UEFSimulator
             PopupImage.SetActive(false);
             audioSource = GetComponent<AudioSource>();
             fpsController = RigidBodyFPSController.GetComponent<RigidbodyFirstPersonController>();
+
+            ShowPopup("Hei fuksipallero! Valitettavasti siivoojat nukkuivat tänään pommiin, joten tietokoneluokassa on hieman sotkuista.\n\nPaina Enter esittääksesi välittävän siistiydestä.");
         }
 
         // Update is called once per frame
@@ -75,7 +81,7 @@ namespace UEFSimulator
                     IncreaseHunger();
                     dayTimer = 0;
                     Promillet -= 3.5f;
-                    if (Promillet < 50) RakkausElama = false;
+                    //if (Promillet < 50) RakkausElama = false;
                     if (Promillet < 0) Promillet = 0;
                 }
 
@@ -136,7 +142,8 @@ namespace UEFSimulator
             KofeiiniText.text = "Kofeiini: " + Kofeiini + " mg";
             MotivaatioText.text = "Motivaatio: " + Motivaatio + "%";
             PsykoosiText.text = "Psykoosi: " + Psykoosi + "%";
-            if (RakkausElama) RakkausElamaText.text = "Rakkauselämä: on";
+            if (RakkausElama) RakkausElamaText.text = "Rakkauselämä: olutta";
+            else if(!virgin) RakkausElamaText.text = "Rakkauselämä: ollutta";
             else RakkausElamaText.text = "Rakkauselämä: ei";
         }
 
@@ -144,6 +151,15 @@ namespace UEFSimulator
         public void Study()
         {
             PlaySound(DiceSound);
+
+            int rand = Random.Range(1, 12);
+            if (rand != 4)
+                IncreaseDice();
+            else
+            {
+                ShowPopup("Et päässyt kurssia läpi!\n\nPaina Enter vittuuntuaksesi.");
+            }
+
             DecreaseMotivation();
             DecreaseFreeTime();
             DecreaseCaffeine();
@@ -151,19 +167,14 @@ namespace UEFSimulator
             IncreaseHunger();
             IncreasePsychosis();
 
-            int rand = Random.Range(1, 12);
-            if(rand != 4)
-                IncreaseDice();
-            else
-            {
-                ShowPopup("Et päässyt kurssia läpi!\n\nPaina Enter vittuuntuaksesi.");
-            }
+            
             RakkausElama = false;
         }
 
         public void Bottle()
         {
-            Rahat++;
+            PlaySound(BottleSound);
+            Kolikot++;
             ShowPopup("Palautit pullon kauppaan!\n\nPaina Enter saadaksesi rahaa.");
         }
 
@@ -180,7 +191,7 @@ namespace UEFSimulator
                 if (randNumber == 13)
                 {
                     PlaySound(VomitSound);
-                    ShowPopup("Sait Kemeristä vatsataudin, joka on tappava. Game over!\n\nPaina Enter aloittaaksesi uuden pelin.");
+                    ShowPopup("Sait Kemeristä vatsataudin, joka on tappava. Game over!\n\nPaina Enter uudelleensyntyäksesi fuksipallerona.");
                     LoseGame();
                 }
 
@@ -193,6 +204,7 @@ namespace UEFSimulator
         {
             if (Rahat >= 45)
             {
+                PlaySound(OluttaSound);
                 DecreaseMoney(45);
                 DecreasePsychosis();
                 IncreaseBeer();
@@ -202,13 +214,14 @@ namespace UEFSimulator
                     int rand = Random.Range(1, 5);
                     if (rand == 1)
                     {
-                        RakkausElama = true;
+                        
                         int rand2 = Random.Range(1, 4);
                         if(rand2 == 1) ShowPopup("Kompastuit karaokelavalta astuessasi pois ja lensit hurmaavan henkilön päälle!\n\nPaina Enter saadaksesi klamydian.");
                         else if (rand2 == 2) ShowPopup("Kompastuit karaokelavalta astuessasi pois ja lensit hurmaavan henkilön päälle!\n\nPaina Enter saadaksesi tippurin.");
                         else if (rand2 == 3) ShowPopup("Kompastuit karaokelavalta astuessasi pois ja lensit hurmaavan henkilön päälle!\n\nPaina Enter saadaksesi HIV:n.");
                         else ShowPopup("Kompastuit karaokelavalta astuessasi pois ja lensit hurmaavan henkilön päälle!\n\nPaina Enter saadaksesi kondylooman.");
-
+                        RakkausElama = true;
+                        virgin = false;
                     }
                 }
                 else RakkausElama = false;
@@ -258,7 +271,17 @@ namespace UEFSimulator
 
         public void Vending()
         {
-            ShowPopup("Sinulla ei ole kolikoita mukanasi, joten et voi ostaa energiajuomaa.\n\nPaina Enter kärsiäksesi vieroitusoireista.");
+            if (Kolikot > 0)
+            {
+                PlaySound(VendSound);
+                Kolikot--;
+                Kofeiini += 10;
+                ShowPopup("Slurp. Ostit energiajuomaa.\n\nPaina Enter päristäksesi.");
+            }
+            else
+            {
+                ShowPopup("Sinulla ei ole kolikoita mukanasi, joten et voi ostaa energiajuomaa.\n\nPaina Enter kärsiäksesi vieroitusoireista.");
+            }
         }
         #endregion
 
@@ -291,7 +314,7 @@ namespace UEFSimulator
             {
                 Motivaatio = 0;
                 PlaySound(ShotgunSound);
-                ShowPopup("Motivaatiosi opiskella loppui. Hävisit pelin!\n\nPaina Enter aloittaaksesi uuden pelin.");
+                ShowPopup("Motivaatiosi opiskella loppui. Hävisit pelin!\n\nPaina Enter uudelleensyntyäksesi fuksipallerona.");
                 LoseGame();
             }
         }
@@ -339,7 +362,7 @@ namespace UEFSimulator
             if (Nalka >= 100)
             {
                 PlaySound(StomachSound);
-                ShowPopup("Kuolit nälkään. Olisit käynyt Kemerissä!\n\nPaina Enter aloittaaksesi uuden pelin.");
+                ShowPopup("Kuolit nälkään. Olisit käynyt Kemerissä!\n\nPaina Enter uudelleensyntyäksesi fuksipallerona.");
                 LoseGame();
             }
         }
@@ -364,7 +387,7 @@ namespace UEFSimulator
             Psykoosi += 2;
             if (Psykoosi >= 100)
             {
-                ShowPopup("Liian kovat psykoosit tulilla! Hävisit pelin.\n\nPaina Enter aloittaaksesi uuden pelin.");
+                ShowPopup("Liian kovat psykoosit tulilla! Hävisit pelin.\n\nPaina Enter uudelleensyntyäksesi fuksipallerona.");
                 LoseGame();
             }
         }
@@ -372,7 +395,27 @@ namespace UEFSimulator
         private void IncreaseDice()
         {
             Nopat += 4;
-            if (Nopat >= 300)
+            if (Nopat >= 60 && !ekaVuosiPopUp)
+            {
+                ShowPopup("Pääsit fuksivuoden opinnoista onnistuneesti läpi.\n\nPaina Enter hajotaksesi tuleviin x-tehtäviin.");
+                ekaVuosiPopUp = true;
+            }
+            else if (Nopat >= 120 && !tokaVuosiPopup)
+            {
+                ShowPopup("Pääsit kakkosvuoden opinnoista onnistuneesti läpi.\n\nPaina Enter hajotaksesi tulevaan kandin kirjoittamiseen.");
+                tokaVuosiPopup = true;
+            }
+            else if (Nopat >= 180 && !kolmasVuosiPopup)
+            {
+                ShowPopup("Suoritit luonnontieteiden kandidaatin tutkinnon onnistuneesti.\n\nPaina Enter hajotaksesi tulevaan kissojen älykkyyden kurssiin.");
+                kolmasVuosiPopup = true;
+            }
+            else if (Nopat >= 240 && !neljasVuosiPopup)
+            {
+                ShowPopup("Pääsit neljännen vuoden opinnoista onnistuneesti läpi.\n\nPaina Enter hajotaksesi tulevaan gradun kirjoittamiseen.");
+                neljasVuosiPopup = true;
+            }
+            else if (Nopat >= 300)
             {
                 ShowPopup("Onnittelut! Toisin kuin suurin osa opiskelijoista, sinä valmistuit ajoissa. Amanuenssi on tyytyväinen.\n\nPaina Enter voittaaksesi pelin.");
                 audioSource.Stop();

@@ -94,6 +94,8 @@ namespace UEFSimulator
 
                         case "Bottle":
                             CtrlScript.Bottle();
+                            Debug.Log(hitInfo.transform.gameObject);
+                            Destroy(hitInfo.transform.gameObject);
                             break;
                     }
 
