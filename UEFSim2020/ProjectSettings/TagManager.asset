@@ -10,6 +10,7 @@ TagManager:
   - Beer
   - Work
   - Vending
+  - Bottle
   layers:
   - Default
   - TransparentFX

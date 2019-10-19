@@ -64,7 +64,7 @@ namespace UEFSimulator
                 secondTimer += Time.deltaTime;
                 if (secondTimer > secondTime)
                 {
-                    DecreaseMoney(4);
+                    DecreaseMoney(3);
                     secondTimer = 0;
                     
                 }
@@ -159,6 +159,12 @@ namespace UEFSimulator
                 ShowPopup("Et päässyt kurssia läpi!\n\nPaina Enter vittuuntuaksesi.");
             }
             RakkausElama = false;
+        }
+
+        public void Bottle()
+        {
+            Rahat++;
+            ShowPopup("Palautit pullon kauppaan!\n\nPaina Enter saadaksesi rahaa.");
         }
 
         public void Eat()
@@ -365,7 +371,7 @@ namespace UEFSimulator
 
         private void IncreaseDice()
         {
-            Nopat += 3;
+            Nopat += 4;
             if (Nopat >= 300)
             {
                 ShowPopup("Onnittelut! Toisin kuin suurin osa opiskelijoista, sinä valmistuit ajoissa. Amanuenssi on tyytyväinen.\n\nPaina Enter voittaaksesi pelin.");

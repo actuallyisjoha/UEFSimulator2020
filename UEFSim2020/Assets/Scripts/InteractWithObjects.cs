@@ -49,6 +49,10 @@ namespace UEFSimulator
                         case "Vending":
                             ItemImage.text = "Osta energiajuomaa";
                             break;
+
+                        case "Bottle":
+                            ItemImage.text = "Palauta pullo kauppaan";
+                            break;
                     }
                 }
             }
@@ -86,6 +90,10 @@ namespace UEFSimulator
 
                         case "Vending":
                             CtrlScript.Vending();
+                            break;
+
+                        case "Bottle":
+                            CtrlScript.Bottle();
                             break;
                     }
 
