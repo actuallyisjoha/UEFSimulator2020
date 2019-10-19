@@ -506,7 +506,7 @@ ScriptsOnlyBuild:
     className: Joystick
   - hash:
       serializedVersion: 2
-      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+      Hash: bc7bd16bce90f27f3e3ecf4c5337330c
     assemblyName: Assembly-CSharp.dll
     namespaceName: UEFSimulator
     className: MainMenuScript
@@ -944,7 +944,7 @@ ScriptsOnlyBuild:
     className: GraphicRaycaster
   - hash:
       serializedVersion: 2
-      Hash: 89f98db0ce41935fc3a35b5c47bf126a
+      Hash: 4c594b651b6fae5ecfaa05d02bc44d2d
     assemblyName: Assembly-CSharp.dll
     namespaceName: UEFSimulator
     className: ControllerScript

@@ -53,6 +53,10 @@ namespace UEFSimulator
                         case "Bottle":
                             ItemImage.text = "Palauta pullo kauppaan";
                             break;
+
+                        case "Radio":
+                            ItemImage.text = "Vaihda radiokanavaa";
+                            break;
                     }
                 }
             }
@@ -90,6 +94,10 @@ namespace UEFSimulator
 
                         case "Vending":
                             CtrlScript.Vending();
+                            break;
+
+                        case "Radio":
+                            CtrlScript.ChangeRadio();
                             break;
 
                         case "Bottle":

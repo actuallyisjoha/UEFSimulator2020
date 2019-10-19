@@ -12,7 +12,7 @@ namespace UEFSimulator
         public bool RakkausElama, ZynZyn;
         public Text TukiKuukaudetText, NopatText, RahatText, VapaaAikaText, OlutText, NalkaText, KofeiiniText, MotivaatioText, PsykoosiText, RakkausElamaText;
         public GameObject PopupImage, RigidBodyFPSController, GameOverImage;
-        public AudioClip ShotgunSound, EatSound, DiceSound, GameSound, StomachSound, VomitSound, VictorySound, OluttaSound, BottleSound, VendSound;
+        public AudioClip ShotgunSound, EatSound, DiceSound, GameSound, StomachSound, VomitSound, VictorySound, OluttaSound, BottleSound, VendSound, Value4Life, UefBiisi, ZynBiisi;
         public float Promillet = 0.0f;
         public Image OluttaImage;
         public GameObject Radio;
@@ -28,7 +28,6 @@ namespace UEFSimulator
         private float dayTimer = 0.0f;
         private float monthTime = 6.0f;
         private float monthTimer = 0.0f;
-        private float timerBeforeNextPopupAllowed = 0.0f;
 
         public static bool popupActive = false;
         private RigidbodyFirstPersonController fpsController;
@@ -148,16 +147,47 @@ namespace UEFSimulator
         }
 
         #region PlayerActions
+        public void ChangeRadio()
+        {
+            Radio.GetComponent<AudioSource>().Stop();
+
+            if(Radio.GetComponent<AudioSource>().clip == ZynBiisi)
+            {
+                Radio.GetComponent<AudioSource>().clip = UefBiisi;
+            }
+            else if (Radio.GetComponent<AudioSource>().clip == UefBiisi)
+            {
+                Radio.GetComponent<AudioSource>().clip = Value4Life;
+            }
+            else {
+                Radio.GetComponent<AudioSource>().clip = ZynBiisi;
+            }
+
+            Radio.GetComponent<AudioSource>().Play();
+        }
+
         public void Study()
         {
             PlaySound(DiceSound);
 
-            int rand = Random.Range(1, 12);
+            int rand = Random.Range(1, 6);
             if (rand != 4)
                 IncreaseDice();
             else
             {
-                ShowPopup("Et päässyt kurssia läpi!\n\nPaina Enter vittuuntuaksesi.");
+                IncreasePsychosis();
+
+                int randS = Random.Range(1, 7);
+                if (randS == 1) ShowPopup("Et päässyt kurssia läpi, koska olit liian darrassa tentissä!\n\nPaina Enter vittuuntuaksesi.");
+                else if (randS == 2) ShowPopup("Et päässyt kurssia läpi, koska olet liian tyhmä!\n\nPaina Enter vittuuntuaksesi.");
+                else if (randS == 3) ShowPopup("Et päässyt kurssia läpi, koska et ole professorin suosikkilistalla.\n\nPaina Enter masentuaksesi.");
+                else if (randS == 4) ShowPopup("Et päässyt kurssia läpi, koska vietit liikaa aikaa Jolenessa.\n\nPaina Enter masentuaksesi.");
+                else if (randS == 5) ShowPopup("Et päässyt kurssia läpi, koska x-tehtävät menivät tunteisiin.\n\nPaina Enter masentuaksesi.");
+                else if (randS == 6) ShowPopup("Et päässyt kurssia läpi, koska ICT-opintopolun opetus ei vastaa tentissä vaadittua osaamista.\n\nPaina Enter masentuaksesi.");
+                else if (randS == 7) ShowPopup("Et päässyt kurssia läpi, koska professorin kissat söivät läksysi.\n\nPaina Enter masentuaksesi.");
+
+
+                
             }
 
             DecreaseMotivation();
@@ -222,6 +252,12 @@ namespace UEFSimulator
                         else ShowPopup("Kompastuit karaokelavalta astuessasi pois ja lensit hurmaavan henkilön päälle!\n\nPaina Enter saadaksesi kondylooman.");
                         RakkausElama = true;
                         virgin = false;
+                    }
+                    else if (rand == 2)
+                    {
+                        ShowPopup("Törmäsit suosikkiprofessoriisi ollessasi Jolenessa.\n\nPaina Enter vastaanottaaksesi ylimääräisiä noppia vapaa-ajan aktiivisuudesta.");
+                        IncreaseDice();
+                        IncreaseDice();
                     }
                 }
                 else RakkausElama = false;
@@ -339,17 +375,18 @@ namespace UEFSimulator
             {
                 Rahat = 0;
                 //if (popupActive) return;
-                int randNumber = Random.Range(1, 10);
+                int randNumber = Random.Range(1, 20);
                 popupActive = true;
                 
                 // Random events from money running out
                 if (randNumber == 7)
                 {
-                    ShowPopup("Rahat loppuivat!\nHaluatko myydä munuaisen ja saada 5000€?\n1) Kyllä 2) Ei");
+                    ShowPopup("Rahat loppuivat!\n\nPaina Enter myydäksesi munuaisen.");
+                    Rahat += 5000;
                 }
                 else
                 {
-                    ShowPopup("Hups! Rahat loppuivat. Loppukuu nuudeleita!\n1) OK");
+                    ShowPopup("Hups! Rahat loppuivat.\n\nPaina Enter syödäksesi loppukuun nuudeleita ilman tonnikalaa.");
                 }
                 popupMonth = TukiKuukaudet;
             }
