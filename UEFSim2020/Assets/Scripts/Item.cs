@@ -1,23 +1,12 @@
-﻿ using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 /*
  *
  * THIS CLASS IS EMPTY FOR A REASON
  * IT IS USED JUST FOR COLLISION DETECTION OF RAYCAST OBJECTS
+ * INTERACTABLE GAMEOBJECTS MUST HAVE ITEM SCRIPT FOR THE INTERACTIWITHOBJECTS SCRIPT TO WORK
  */
-public class Item : MonoBehaviour
+namespace UEFSimulator
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public class Item : MonoBehaviour { }
 }

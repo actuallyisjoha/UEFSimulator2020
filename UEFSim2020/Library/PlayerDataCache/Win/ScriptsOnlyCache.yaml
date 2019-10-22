@@ -1138,4 +1138,4 @@ ScriptsOnlyBuild:
   scenePathNames:
   - Assets/SampleScenes/Scenes/MainMenuScene.unity
   - Assets/SampleScenes/Scenes/LaitosScene.unity
-  playerPath: C:/Users/Johanna/Desktop/uefsim/UEFSim2020.exe
+  playerPath: C:/Users/Johanna/Desktop/uefsim-exe/UEFSim2020.exe
