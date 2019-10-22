@@ -13,7 +13,7 @@ namespace UEFSimulator
 
         void Update()
         {
-            if (ControllerScript.GameOver) return;
+            if (CtrlScript.GameOver) return;
             Ray ray = Camera.ViewportPointToRay(Vector3.one / 2f);
             Debug.DrawRay(ray.origin, ray.direction * 2f, Color.red);
 
@@ -68,7 +68,7 @@ namespace UEFSimulator
             if (SelectedItem != null)
             {
                 ItemImage.gameObject.SetActive(true);
-                if (Input.GetKeyDown(KeyCode.E) && !ControllerScript.popupActive)
+                if (Input.GetKeyDown(KeyCode.E) && !CtrlScript.PopupActive)
                 {
                     switch (hitInfo.transform.tag)
                     {
@@ -102,7 +102,6 @@ namespace UEFSimulator
 
                         case "Bottle":
                             CtrlScript.Bottle();
-                            Debug.Log(hitInfo.transform.gameObject);
                             Destroy(hitInfo.transform.gameObject);
                             break;
                     }
