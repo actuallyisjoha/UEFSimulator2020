@@ -9,10 +9,8 @@ namespace UEFSimulator
     {
         public int TukiKuukaudet, Nopat, Rahat, VapaaAika, Nalka, Kofeiini, Motivaatio, Psykoosi, MotivationPenalty, MonthlyAllowance, Kolikot;
         public float Promillet = 0.0f;
-        public bool RakkausElama, ZynZyn, GameOver, PopupActive;
-        public AudioClip FoodPoisoningSound, MotivationDeathSound, VictorySound, BottleSound, DrinkSound, EatSound, GameSound, StudySound, VendingSound, WorkSound,
-            HungerSound, WorkReminderSound, ValueForLifeMusic, UefMusic, ZynMusic, NoMoneySound, PsychosisDeathSound, WantingBeerSound, LowMotivationSound;
-        public GameObject PopupImage, RigidBodyFPSController, GameOverImage, Radio;
+        public bool RakkausElama, GameOver, PopupActive;
+        public GameObject PopupImage, RigidBodyFPSController, GameOverImage;
         public Image OluttaImage;
         public Text TukiKuukaudetText, NopatText, RahatText, VapaaAikaText, OlutText, NalkaText, KofeiiniText, MotivaatioText, PsykoosiText, RakkausElamaText;
 
@@ -25,24 +23,19 @@ namespace UEFSimulator
         private float monthTimer = 0.0f;
         private bool virgin = true;
         private bool ekaVuosiPopUp, tokaVuosiPopup, kolmasVuosiPopup, neljasVuosiPopup, joleneVisited;
-        private AudioSource audioSource, audiosourceAmbient;
+        
         private RigidbodyFirstPersonController fpsController;
+        private AudioScript audioScript;
 
         void Start()
         {
             PopupActive = false;
             PopupImage.SetActive(false);
-            audioSource = GetComponents<AudioSource>()[0];
-            audiosourceAmbient = GetComponents<AudioSource>()[1];
+
             fpsController = RigidBodyFPSController.GetComponent<RigidbodyFirstPersonController>();
+            audioScript = GetComponent<AudioScript>();
 
             ShowPopup("Hei fuksipallero! Valitettavasti siivoojat nukkuivat tänään pommiin, joten tietokoneluokassa on hieman sotkuista.\n\nPaina Enter esittääksesi välittävän siistiydestä.");
-
-            // Randomize radio station
-            for(int i = 0; i < Random.Range(0,3); i++)
-            {
-                ChangeRadio();
-            }
         }
 
         void Update()
@@ -67,7 +60,7 @@ namespace UEFSimulator
                 secondTimer += Time.deltaTime;
                 if (secondTimer > secondTime)
                 {
-                    DecreaseMoney(4);
+                    DecreaseMoney(3);
                     secondTimer = 0;
                     
                 }
@@ -87,7 +80,8 @@ namespace UEFSimulator
                     Rahat += MonthlyAllowance;
                     DecreaseMonths();
                     monthTimer = 0;
-                    if (Random.Range(1, 10) == 1 && !audioSource.isPlaying) PlayAmbientSound(WorkReminderSound);
+                    if (Random.Range(1, 10) == 1 && !audioScript.AmbientSoundPlaying())
+                        audioScript.PlayAmbientSound(AmbientSounds.WorkReminder);
                 }
 
                 if (Promillet < 10) fpsController.movementSettings.ForwardSpeed = 8.0f;
@@ -132,26 +126,12 @@ namespace UEFSimulator
         #region PlayerActions
         public void ChangeRadio()
         {
-            Radio.GetComponent<AudioSource>().Stop();
-
-            if(Radio.GetComponent<AudioSource>().clip == ZynMusic)
-            {
-                Radio.GetComponent<AudioSource>().clip = UefMusic;
-            }
-            else if (Radio.GetComponent<AudioSource>().clip == UefMusic)
-            {
-                Radio.GetComponent<AudioSource>().clip = ValueForLifeMusic;
-            }
-            else {
-                Radio.GetComponent<AudioSource>().clip = ZynMusic;
-            }
-
-            Radio.GetComponent<AudioSource>().Play();
+            audioScript.ChangeRadio();
         }
 
         public void Study()
         {
-            PlaySound(StudySound);
+            audioScript.PlaySound(Sounds.Study);
 
             int rand = Random.Range(1, 6);
             if (rand != 4)
@@ -183,7 +163,7 @@ namespace UEFSimulator
 
         public void Bottle()
         {
-            PlaySound(BottleSound);
+            audioScript.PlaySound(Sounds.Bottle);
             Kolikot++;
             ShowPopup("Palautit pullon kauppaan!\n\nPaina Enter saadaksesi rahaa.");
         }
@@ -192,7 +172,7 @@ namespace UEFSimulator
         {
             if (Rahat >= 4)
             {
-                PlaySound(EatSound);
+                audioScript.PlaySound(Sounds.Eat);
                 DecreaseMoney(4);
                 DecreaseHunger();
 
@@ -201,7 +181,7 @@ namespace UEFSimulator
                 // Random events from money running out
                 if (randNumber == 13)
                 {
-                    PlaySound(FoodPoisoningSound);
+                    audioScript.PlaySound(Sounds.FoodPoisoning);
                     ShowPopup("Sait Kemeristä vatsataudin, joka on tappava. Game over!\n\nPaina Enter uudelleensyntyäksesi fuksipallerona.");
                     LoseGame();
                 }
@@ -215,7 +195,7 @@ namespace UEFSimulator
         {
             if (Rahat >= 45)
             {
-                PlaySound(DrinkSound);
+                audioScript.PlaySound(Sounds.Drink);
                 DecreaseMoney(50);
                 DecreasePsychosis();
                 IncreaseBeer();
@@ -250,7 +230,7 @@ namespace UEFSimulator
         {
             if (Nopat > 180)
             {
-                PlaySound(WorkSound);
+                audioScript.PlaySound(Sounds.Work);
                 Rahat += 600;
                 IncreaseHunger();
                 IncreasePsychosis();
@@ -268,7 +248,7 @@ namespace UEFSimulator
                 else if (rand == 5) ShowPopup("Työhaastattelijan koira söi työhakemuksesi.\n\nPaina Enter pysyäksesi työttömänä.");
                 else if (rand == 6) ShowPopup("Insert jokin tekosyy miksi et pääse töihin.\n\nPaina Enter pysyäksesi työttömänä.");
                 else if (rand == 7) ShowPopup("Et sovi työyhteisön sosiaalisiin normeihin.\n\nPaina Enter pysyäksesi työttömänä.");
-                PlaySound(WorkReminderSound);
+                audioScript.PlayAmbientSound(AmbientSounds.WorkReminder);
             }
         }
 
@@ -283,7 +263,7 @@ namespace UEFSimulator
 
         public void Game()
         {
-            PlaySound(GameSound);
+            audioScript.PlaySound(Sounds.Game);
             IncreaseMotivation();
             IncreaseHunger();
             RakkausElama = false;
@@ -293,7 +273,7 @@ namespace UEFSimulator
         {
             if (Kolikot > 0)
             {
-                PlaySound(VendingSound);
+                audioScript.PlaySound(Sounds.Vending);
                 Kolikot--;
                 Kofeiini += 10;
                 ShowPopup("Slurp. Ostit energiajuomaa.\n\nPaina Enter päristäksesi.");
@@ -324,18 +304,19 @@ namespace UEFSimulator
             {
                 MonthlyAllowance = 0;
                 if (Random.Range(1,2) == 1) ShowPopup("Oho! Tukikuukaudet loppuivat. Kela ei enää sponsoroi sinua.");
-                PlayAmbientSound(WorkReminderSound);
+                audioScript.PlayAmbientSound(AmbientSounds.WorkReminder);
             }
         }
 
         private void DecreaseMotivation()
         {
             Motivaatio -= 1 + (1* MotivationPenalty);
-            if (Motivaatio > 0 && Motivaatio < 50 && Random.Range(1,3) == 1) PlayAmbientSound(LowMotivationSound);
+            if (Motivaatio > 0 && Motivaatio < 50 && Random.Range(1,3) == 1)
+                audioScript.PlayAmbientSound(AmbientSounds.LowMotivation);
             if (Motivaatio <= 0)
             {
                 Motivaatio = 0;
-                PlaySound(MotivationDeathSound);
+                audioScript.PlaySound(Sounds.MotivationDeath);
                 ShowPopup("Motivaatiosi opiskella loppui. Hävisit pelin!\n\nPaina Enter uudelleensyntyäksesi fuksipallerona.");
                 LoseGame();
             }
@@ -373,17 +354,18 @@ namespace UEFSimulator
                     ShowPopup("Hups! Rahat loppuivat.\n\nPaina Enter syödäksesi loppukuun nuudeleita ilman tonnikalaa.");
                 }
                 popupMonth = TukiKuukaudet;
-                PlayAmbientSound(NoMoneySound);
+                audioScript.PlayAmbientSound(AmbientSounds.NoMoney);
             }
         }
 
         private void IncreaseHunger()
         {
             Nalka += 3;
-            if(Nalka > 60 && Nalka < 70) PlayAmbientSound(HungerSound);
+            if(Nalka > 60 && Nalka < 70)
+                audioScript.PlayAmbientSound(AmbientSounds.Hunger);
             if (Nalka >= 100)
             {
-                PlaySound(HungerSound);
+                audioScript.PlayAmbientSound(AmbientSounds.Hunger);
                 ShowPopup("Kuolit nälkään. Olisit käynyt Kemerissä!\n\nPaina Enter uudelleensyntyäksesi fuksipallerona.");
                 LoseGame();
             }
@@ -407,11 +389,12 @@ namespace UEFSimulator
         private void IncreasePsychosis()
         {
             Psykoosi += 2;
-            if(Psykoosi > 50 && Random.Range(1,3) == 1) PlayAmbientSound(WantingBeerSound);
+            if(Psykoosi > 50 && Random.Range(1,3) == 1)
+                audioScript.PlayAmbientSound(AmbientSounds.WantingBeer);
             if (Psykoosi >= 100)
             {
                 ShowPopup("Liian kovat psykoosit tulilla! Hävisit pelin.\n\nPaina Enter uudelleensyntyäksesi fuksipallerona.");
-                PlaySound(PsychosisDeathSound);
+                audioScript.PlaySound(Sounds.PsychosisDeath);
                 LoseGame();
             }
         }
@@ -442,8 +425,7 @@ namespace UEFSimulator
             else if (Nopat >= 300)
             {
                 ShowPopup("Onnittelut! Toisin kuin suurin osa opiskelijoista, sinä valmistuit ajoissa. Amanuenssi on tyytyväinen.\n\nPaina Enter voittaaksesi pelin.");
-                audioSource.Stop();
-                PlaySound(VictorySound);
+                audioScript.PlaySound(Sounds.Victory);
                 LoseGame();
             }
            
@@ -460,21 +442,9 @@ namespace UEFSimulator
         {
             GameOverImage.SetActive(true);
             PopupImage.SetActive(true);
-            Radio.GetComponent<AudioSource>().Stop();
-            audiosourceAmbient.Stop();
+            audioScript.StopSounds();
             GameOver = true;
             RigidBodyFPSController.GetComponent<RigidbodyFirstPersonController>().enabled = false;
-        }
-
-        private void PlaySound(AudioClip clip)
-        {
-            if (audioSource.isPlaying) audioSource.Stop();
-            audioSource.PlayOneShot(clip);
-        }
-
-        private void PlayAmbientSound(AudioClip clip)
-        {
-            if (!audiosourceAmbient.isPlaying) audiosourceAmbient.PlayOneShot(clip);
         }
     }
 }
