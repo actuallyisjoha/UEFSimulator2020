@@ -13,6 +13,7 @@ namespace UEFSimulator
 
         void Update()
         {
+            if(CtrlScript == null || Camera == null)
             if (CtrlScript.GameOver) return;
             Ray ray = Camera.ViewportPointToRay(Vector3.one / 2f);
             Debug.DrawRay(ray.origin, ray.direction * 2f, Color.red);
@@ -24,40 +25,43 @@ namespace UEFSimulator
                 if (hitItem != null)
                 {
                     SelectedItem = hitItem;
-                    switch (hitInfo.transform.tag)
-                    {
-                        case "Computer":
-                            ItemImage.text = "Opiskele";
-                            break;
+                    if(ItemImage != null) {
+                        switch (hitInfo.transform.tag)
+                        {
+                            case "Computer":
+                                ItemImage.text = "Opiskele";
+                                break;
 
-                        case "Food":
-                            ItemImage.text = "Syö Kemerissä";
-                            break;
+                            case "Food":
+                                ItemImage.text = "Syö Kemerissä";
+                                break;
 
-                        case "Game":
-                            ItemImage.text = "Pelaa peliä";
-                            break;
+                            case "Game":
+                                ItemImage.text = "Pelaa peliä";
+                                break;
 
-                        case "Beer":
-                            ItemImage.text = "Juo kaljaa Jolenessa";
-                            break;
+                            case "Beer":
+                                ItemImage.text = "Juo kaljaa Jolenessa";
+                                break;
 
-                        case "Work":
-                            ItemImage.text = "Mene töihin ja hajoa intialaisiin koodareihin";
-                            break;
+                            case "Work":
+                                ItemImage.text = "Mene töihin ja hajoa intialaisiin koodareihin";
+                                break;
 
-                        case "Vending":
-                            ItemImage.text = "Osta energiajuomaa";
-                            break;
+                            case "Vending":
+                                ItemImage.text = "Osta energiajuomaa";
+                                break;
 
-                        case "Bottle":
-                            ItemImage.text = "Palauta pullo kauppaan";
-                            break;
+                            case "Bottle":
+                                ItemImage.text = "Palauta pullo kauppaan";
+                                break;
 
-                        case "Radio":
-                            ItemImage.text = "Vaihda radiokanavaa";
-                            break;
+                            case "Radio":
+                                ItemImage.text = "Vaihda radiokanavaa";
+                                break;
+                        }
                     }
+                    
                 }
             }
             else
@@ -67,7 +71,7 @@ namespace UEFSimulator
 
             if (SelectedItem != null)
             {
-                ItemImage.gameObject.SetActive(true);
+                if(ItemImage != null) ItemImage.gameObject.SetActive(true);
                 if (Input.GetKeyDown(KeyCode.E) && !CtrlScript.PopupActive)
                 {
                     switch (hitInfo.transform.tag)
@@ -110,7 +114,7 @@ namespace UEFSimulator
             }
             else
             {
-                ItemImage.gameObject.SetActive(false);
+                if(ItemImage != null) ItemImage.gameObject.SetActive(false);
             }
         }
 

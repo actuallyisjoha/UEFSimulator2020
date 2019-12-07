@@ -50,18 +50,27 @@ namespace UEFSimulator
         // Start is called before the first frame update
         void Start()
         {
-            audioSource = GetComponents<AudioSource>()[0];
-            ambientAudioSource = GetComponents<AudioSource>()[1];
-
-            // Randomize radio station
-            for (int i = 0; i < Random.Range(0, 3); i++)
+            try
             {
-                ChangeRadio();
+                audioSource = GetComponents<AudioSource>()[0];
+                ambientAudioSource = GetComponents<AudioSource>()[1];
+
+                // Randomize radio station
+                for (int i = 0; i < Random.Range(0, 3); i++)
+                {
+                    ChangeRadio();
+                }
             }
+            catch
+            {
+                // Do you really to expect things to happen in here?
+            }
+            
         }
 
         public void PlaySound(Sounds sound)
         {
+            if (audioSource == null) return;
             AudioClip clip = null;
             switch (sound)
             {
@@ -111,6 +120,7 @@ namespace UEFSimulator
         public void PlayAmbientSound(AmbientSounds sound)
         {
             AudioClip clip = null;
+            if (ambientAudioSource == null) return;
             switch (sound)
             {
                 case AmbientSounds.WorkReminder:
@@ -139,22 +149,28 @@ namespace UEFSimulator
 
         public bool SoundPlaying()
         {
-            return audioSource.isPlaying;
+            bool isPlaying = false;
+            if (audioSource != null) isPlaying = audioSource.isPlaying;
+            return isPlaying;
         }
 
         public bool AmbientSoundPlaying()
         {
-            return ambientAudioSource.isPlaying;
+            bool isPlaying = false;
+            if (ambientAudioSource != null) isPlaying = ambientAudioSource.isPlaying;
+            return isPlaying;
         }
         public void StopSounds()
         {
-            ambientAudioSource.Stop();
-            audioSource.Stop();
-            Radio.GetComponent<AudioSource>().Stop();
+            if (ambientAudioSource != null) ambientAudioSource.Stop();
+            if (audioSource != null) audioSource.Stop();
+            if(Radio != null && Radio.GetComponent<AudioSource>() != null) Radio.GetComponent<AudioSource>().Stop();
         }
 
         public void ChangeRadio()
         {
+            if (Radio == null && Radio.GetComponent<AudioSource>() == null) return;
+
             Radio.GetComponent<AudioSource>().Stop();
 
             if (Radio.GetComponent<AudioSource>().clip == ZynMusic)
