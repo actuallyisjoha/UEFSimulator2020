@@ -3214,6 +3214,7 @@ GameObject:
   m_Component:
   - component: {fileID: 115410981}
   - component: {fileID: 115410982}
+  - component: {fileID: 115410985}
   - component: {fileID: 115410983}
   - component: {fileID: 115410984}
   m_Layer: 0
@@ -3262,33 +3263,11 @@ MonoBehaviour:
   Kolikot: 0
   Promillet: 0
   RakkausElama: 0
-  ZynZyn: 0
   GameOver: 0
   PopupActive: 0
-  FoodPoisoningSound: {fileID: 8300000, guid: c98306c79b0fda248bc1fdc0fc6159bb, type: 3}
-  MotivationDeathSound: {fileID: 8300000, guid: bc7a5e874ae40624388e80052a0713d8,
-    type: 3}
-  VictorySound: {fileID: 8300000, guid: a3537592ef37309488c4f8ad256b5844, type: 3}
-  BottleSound: {fileID: 8300000, guid: f7418e64929a4be4698e7ad27c6675c2, type: 3}
-  DrinkSound: {fileID: 8300000, guid: fb822acb87672ed4c8437abd62416a28, type: 3}
-  EatSound: {fileID: 8300000, guid: e452817c7f54c554cb5e6f0b9fe9cc09, type: 3}
-  GameSound: {fileID: 8300000, guid: a1484b8c0d98afb43abb620b6f1005eb, type: 3}
-  StudySound: {fileID: 8300000, guid: 94158053abdaf5c49806c152a8a7f407, type: 3}
-  VendingSound: {fileID: 8300000, guid: 093e5dd460525fd4a91a91f2e8bb6e66, type: 3}
-  WorkSound: {fileID: 8300000, guid: 895b8689e97f1c34b832f9b58eda2c61, type: 3}
-  HungerSound: {fileID: 8300000, guid: 0619a716d2561b64b9626a623c2a9091, type: 3}
-  WorkReminderSound: {fileID: 8300000, guid: d501244887bb6b848b17e46026a5fbf3, type: 3}
-  ValueForLifeMusic: {fileID: 8300000, guid: 407c1a61b1e5b2c4a88ca1e7c840f9d1, type: 3}
-  UefMusic: {fileID: 8300000, guid: 560fa117d46257548a65cdb1b9e68239, type: 3}
-  ZynMusic: {fileID: 8300000, guid: 0e4c4343eab306a4fb5614a630ae20d0, type: 3}
-  NoMoneySound: {fileID: 8300000, guid: a7bc8765a8872c1489d986a4bb38a887, type: 3}
-  PsychosisDeathSound: {fileID: 8300000, guid: fe094125a5c134d41bf7b7f64927fc2a, type: 3}
-  WantingBeerSound: {fileID: 8300000, guid: 66948cfa494f8d04ea42f2320357f833, type: 3}
-  LowMotivationSound: {fileID: 8300000, guid: 6aff8dc97bf34c148a30d9467b79cceb, type: 3}
   PopupImage: {fileID: 183622767}
   RigidBodyFPSController: {fileID: 883800625}
   GameOverImage: {fileID: 42023221}
-  Radio: {fileID: 11679590}
   OluttaImage: {fileID: 1307466693}
   TukiKuukaudetText: {fileID: 2112940694}
   NopatText: {fileID: 807570947}
@@ -3492,6 +3471,39 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &115410985
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 115410980}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c706903537c98e45ad4f588a08c10fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Radio: {fileID: 11679590}
+  FoodPoisoningSound: {fileID: 8300000, guid: c98306c79b0fda248bc1fdc0fc6159bb, type: 3}
+  MotivationDeathSound: {fileID: 8300000, guid: bc7a5e874ae40624388e80052a0713d8,
+    type: 3}
+  VictorySound: {fileID: 8300000, guid: a3537592ef37309488c4f8ad256b5844, type: 3}
+  BottleSound: {fileID: 8300000, guid: f7418e64929a4be4698e7ad27c6675c2, type: 3}
+  DrinkSound: {fileID: 8300000, guid: fb822acb87672ed4c8437abd62416a28, type: 3}
+  EatSound: {fileID: 8300000, guid: e452817c7f54c554cb5e6f0b9fe9cc09, type: 3}
+  GameSound: {fileID: 8300000, guid: a1484b8c0d98afb43abb620b6f1005eb, type: 3}
+  StudySound: {fileID: 8300000, guid: 94158053abdaf5c49806c152a8a7f407, type: 3}
+  VendingSound: {fileID: 8300000, guid: 093e5dd460525fd4a91a91f2e8bb6e66, type: 3}
+  WorkSound: {fileID: 8300000, guid: 895b8689e97f1c34b832f9b58eda2c61, type: 3}
+  HungerSound: {fileID: 8300000, guid: 0619a716d2561b64b9626a623c2a9091, type: 3}
+  WorkReminderSound: {fileID: 8300000, guid: d501244887bb6b848b17e46026a5fbf3, type: 3}
+  ValueForLifeMusic: {fileID: 8300000, guid: 407c1a61b1e5b2c4a88ca1e7c840f9d1, type: 3}
+  UefMusic: {fileID: 8300000, guid: 560fa117d46257548a65cdb1b9e68239, type: 3}
+  ZynMusic: {fileID: 8300000, guid: 0e4c4343eab306a4fb5614a630ae20d0, type: 3}
+  NoMoneySound: {fileID: 8300000, guid: a7bc8765a8872c1489d986a4bb38a887, type: 3}
+  PsychosisDeathSound: {fileID: 8300000, guid: fe094125a5c134d41bf7b7f64927fc2a, type: 3}
+  WantingBeerSound: {fileID: 8300000, guid: 66948cfa494f8d04ea42f2320357f833, type: 3}
+  LowMotivationSound: {fileID: 8300000, guid: 6aff8dc97bf34c148a30d9467b79cceb, type: 3}
 --- !u!4 &118526579 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2012311695566436273, guid: 7cd2fb4aa8c4f1c4aaca09b7aa213cab,
@@ -19532,11 +19544,11 @@ MonoBehaviour:
       m_RotationOrder: 4
     CurrentTargetSpeed: 8
   mouseLook:
-    XSensitivity: 2
-    YSensitivity: 2
+    XSensitivity: 1.7
+    YSensitivity: 1.7
     clampVerticalRotation: 1
     MinimumX: -45
-    MaximumX: 90
+    MaximumX: 45
     smooth: 1
     smoothTime: 18
     lockCursor: 1
