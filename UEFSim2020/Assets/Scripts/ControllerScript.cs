@@ -67,7 +67,7 @@ namespace UEFSimulator
                 secondTimer += Time.deltaTime;
                 if (secondTimer > secondTime)
                 {
-                    DecreaseMoney(4);
+                    DecreaseMoney(3);
                     secondTimer = 0;
                     
                 }
@@ -160,13 +160,14 @@ namespace UEFSimulator
             {
                 IncreasePsychosis();
 
-                int randS = Random.Range(1, 7);
-                if (randS == 1) ShowPopup("Et päässyt kurssia läpi, koska olit liian darrassa tentissä!\n\nPaina Enter oksentaaksesi tenttipaperiin.");
+                int randS = Random.Range(1, 8);
+                if (randS == 1 && joleneVisited && Promillet == 0) ShowPopup("Et päässyt kurssia läpi, koska olit liian darrassa tentissä!\n\nPaina Enter oksentaaksesi tenttipaperiin.");
                 else if (randS == 2) ShowPopup("Et päässyt kurssia läpi, koska olet liian tyhmä!\n\nPaina Enter vittuuntuaksesi.");
                 else if (randS == 3) ShowPopup("Et päässyt kurssia läpi, koska et ole professorin suosikkilistalla.\n\nPaina Enter lähettääksesi Facebook-viestejä suosion toivossa.");
                 else if (randS == 4 && joleneVisited) ShowPopup("Et päässyt kurssia läpi, koska vietit liikaa aikaa Jolenessa.\n\nPaina Enter alkoholisoituaksesi.");
                 else if (randS == 5) ShowPopup("Et päässyt kurssia läpi, koska x-tehtävät menivät tunteisiin.\n\nPaina Enter hajottaaksesi näppäimistön.");
                 else if (randS == 6) ShowPopup("Et päässyt kurssia läpi, koska ICT-opintopolun opetus ei vastaa tentissä vaadittua osaamista.\n\nPaina Enter lähettääksesi vihaista kurssipalautetta.");
+                else if (randS == 7 && RakkausElama) ShowPopup("Et päässyt kurssia läpi, koska olit liikaa tunnellissa.\n\nPaina Enter mennäksesi tunneliin vitutuksesta.");
                 else ShowPopup("Et päässyt kurssia läpi, koska professorin kissat söivät läksysi.\n\nPaina Enter opetellaksesi tekemään varmuuskopioita.");
             }
 
@@ -323,15 +324,18 @@ namespace UEFSimulator
             else
             {
                 MonthlyAllowance = 0;
-                if (Random.Range(1,2) == 1) ShowPopup("Oho! Tukikuukaudet loppuivat. Kela ei enää sponsoroi sinua.");
-                PlayAmbientSound(WorkReminderSound);
+                if (Random.Range(1, 3) == 1)
+                {
+                    ShowPopup("Oho! Tukikuukaudet loppuivat. Kela ei enää sponsoroi sinua.");
+                    PlayAmbientSound(WorkReminderSound);
+                }
             }
         }
 
         private void DecreaseMotivation()
         {
             Motivaatio -= 1 + (1* MotivationPenalty);
-            if (Motivaatio > 0 && Motivaatio < 50 && Random.Range(1,3) == 1) PlayAmbientSound(LowMotivationSound);
+            if (Motivaatio > 0 && Motivaatio < 50 && Random.Range(1,5) == 1) PlayAmbientSound(LowMotivationSound);
             if (Motivaatio <= 0)
             {
                 Motivaatio = 0;
@@ -344,13 +348,21 @@ namespace UEFSimulator
         private void DecreaseFreeTime()
         {
             VapaaAika--;
-            // Modify MotivationPenalty in here
-            //if (VapaaAika <= 0) GameOver();
+            if(VapaaAika <= 0)
+            {
+                VapaaAika = 0;
+                ShowPopup("Sinulla ei ole yhtään vapaa-aikaa!\n\nPaina Enter todetaksesi olevasi lammas. Bää bää. Babylon kutsuu.");
+            }
         }
 
         private void DecreaseCaffeine()
         {
             Kofeiini--;
+            if(Kofeiini <= 0)
+            {
+                Kofeiini = 0;
+                ShowPopup("Vieroitusoireet iskee!\n\nPaina Enter harkitaksesi ES tölkin ostamista lähimmästä Siwasta.");
+            }
         }
 
         private void DecreaseMoney(int value)
@@ -407,7 +419,7 @@ namespace UEFSimulator
         private void IncreasePsychosis()
         {
             Psykoosi += 2;
-            if(Psykoosi > 50 && Random.Range(1,3) == 1) PlayAmbientSound(WantingBeerSound);
+            if(Psykoosi > 50 && Random.Range(1,5) == 1) PlayAmbientSound(WantingBeerSound);
             if (Psykoosi >= 100)
             {
                 ShowPopup("Liian kovat psykoosit tulilla! Hävisit pelin.\n\nPaina Enter uudelleensyntyäksesi fuksipallerona.");
