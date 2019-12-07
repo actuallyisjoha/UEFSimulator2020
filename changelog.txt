@@ -1,0 +1,5 @@
+UEF Simulator 2020 Changelog
+--------------------------------------
+7.12.2019:
+-Päivitetty Unityn versioon 2019.2.15f1
+-WebGL optimisiointia, parannettu latausaikoja
