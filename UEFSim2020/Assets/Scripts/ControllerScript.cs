@@ -307,7 +307,7 @@ namespace UEFSimulator
                 if (Random.Range(1, 3) == 1)
                 {
                     ShowPopup("Oho! Tukikuukaudet loppuivat. Kela ei enää sponsoroi sinua.");
-                    PlayAmbientSound(WorkReminderSound);
+                    //PlayAmbientSound(WorkReminderSound);
                 }
             }
         }
@@ -315,7 +315,7 @@ namespace UEFSimulator
         private void DecreaseMotivation()
         {
             Motivaatio -= 1 + (1* MotivationPenalty);
-            if (Motivaatio > 0 && Motivaatio < 50 && Random.Range(1,5) == 1) PlayAmbientSound(LowMotivationSound);
+            //if (Motivaatio > 0 && Motivaatio < 50 && Random.Range(1,5) == 1) PlayAmbientSound(LowMotivationSound);
             if (Motivaatio <= 0)
             {
                 Motivaatio = 0;
@@ -400,7 +400,7 @@ namespace UEFSimulator
         private void IncreasePsychosis()
         {
             Psykoosi += 2;
-            if(Psykoosi > 50 && Random.Range(1,5) == 1) PlayAmbientSound(WantingBeerSound);
+            //if(Psykoosi > 50 && Random.Range(1,5) == 1) PlayAmbientSound(WantingBeerSound);
             if (Psykoosi >= 100)
             {
                 ShowPopup("Liian kovat psykoosit tulilla! Hävisit pelin.\n\nPaina Enter uudelleensyntyäksesi fuksipallerona.");
